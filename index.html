@@ -1,7 +1,30 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>佛法知識庫</title>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#fcfbf9;color:#2c2c2c;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif;line-height:1.7}.header{position:sticky;top:0;z-index:20;background:rgba(252,251,249,.9);backdrop-filter:blur(8px);border-bottom:1px solid #e7e3dc;padding:12px 16px}.layout{max-width:900px;margin:0 auto;padding:20px 16px;display:flex;gap:20px}.sidebar{width:200px;flex-shrink:0;position:sticky;top:70px;height:fit-content}.main{flex:1;min-width:0}.master-card{background:#fff;border:1px solid #e7e3dc;border-radius:14px;padding:14px;margin-bottom:16px}.article-item{padding:12px;border-bottom:1px solid #f0ece5;cursor:pointer}.article-item:hover{background:#fdfbf9}.tag-btn{background:#f4f0e8;border:none;padding:2px 8px;border-radius:999px;font-size:.7rem;cursor:pointer;margin:2px}.detail-title{font-size:1.4rem;font-weight:800;margin:8px 0}.detail-content{white-space:pre-wrap;line-height:1.9;margin-top:16px}.yt-card{margin:14px 0}.yt-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px}.yt-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}.image-gallery{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.image-gallery img{width:120px;height:120px;object-fit:cover;border-radius:10px;border:1px solid #e0dad1}@media(max-width:640px){.layout{flex-direction:column}.sidebar{width:100%;position:static}}</style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#fcfbf9;color:#2c2c2c;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif;line-height:1.7}
+.header{position:sticky;top:0;z-index:20;background:rgba(252,251,249,.92);backdrop-filter:blur(10px);border-bottom:1px solid #e7e3dc;padding:14px 16px}
+.layout{max-width:1024px;margin:0 auto;padding:22px 16px;display:flex;gap:20px}
+.sidebar{width:260px;flex-shrink:0;position:sticky;top:74px;height:fit-content}
+.main{flex:1;min-width:0}
+.master-card{background:#fff;border:1px solid #e7e3dc;border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.02)}
+.master-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .18s ease;font-size:14px;line-height:1.3;margin-bottom:2px;border:1px solid transparent}
+.master-item:hover{background:#fdfbf9;border-color:#f0ece5;transform:translateX(2px)}
+.master-item.active{background:#2d4a3e;color:#fff;border-color:#2d4a3e;box-shadow:0 4px 12px rgba(45,74,62,.22)}
+.count-badge{min-width:30px;height:24px;display:inline-flex;align-items:center;justify-content:center;padding:0 8px;border-radius:8px;font-size:11px;font-weight:800;letter-spacing:.3px;transition:all .18s}
+.master-item .count-badge{background:#f4f0e8;color:#5a554c;border:1px solid #e7e3dc}
+.master-item.active .count-badge{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(6px)}
+.article-item{padding:14px 12px;border-bottom:1px solid #f0ece5;cursor:pointer;border-radius:10px;margin-bottom:2px;transition:all .15s}
+.article-item:hover{background:#fdfbf9;transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.tag-btn{background:#f4f0e8;border:1px solid #e7e3dc;padding:3px 9px;border-radius:999px;font-size:.72rem;cursor:pointer;margin:2px;transition:all .15s}
+.tag-btn:hover{background:#2d4a3e;color:#fff;border-color:#2d4a3e}
+.detail-title{font-size:1.5rem;font-weight:850;margin:10px 0;line-height:1.3}
+.detail-content{white-space:pre-wrap;line-height:1.95;margin-top:18px;font-size:15px}
+.yt-card{margin:16px 0}.yt-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,.08)}.yt-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.image-gallery{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.image-gallery img{width:128px;height:128px;object-fit:cover;border-radius:12px;border:1px solid #e0dad1;transition:transform .2s;cursor:pointer}.image-gallery img:hover{transform:scale(1.03)}
+@media(max-width:780px){.layout{flex-direction:column}.sidebar{width:100%;position:static}}
+</style>
 </head>
 <body>
 <header class="header"><div style="max-width:900px;margin:0 auto;display:flex;justify-content:space-between;"><strong>佛法知識庫</strong><span>共 <span id="totalCount"></span> 篇</span></div></header>
@@ -17,7 +40,27 @@ function linkify(t){return escapeHtml(t).replace(/(https?:\/\/[^\s]+)/g,'<a href
 function getYoutubeId(url){if(!url) return null;const m=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);return m?m[1]:null;}
 function highlight(text,q){if(!q) return escapeHtml(text);const esc=q.replace(/[.*+?^$\\{}()|[\]\\]/g,'\\$&');return escapeHtml(text).replace(new RegExp(esc,'gi'),'<mark>$&</mark>');}
 function getSmartSnippet(c,q){if(!q) return c.slice(0,90)+'...';const i=c.toLowerCase().indexOf(q.toLowerCase());if(i===-1) return c.slice(0,90)+'...';return '...'+c.slice(Math.max(0,i-20),i+70)+'...';}
-function renderSidebar(){const counts={};articlesData.forEach(a=>counts[a.master]=(counts[a.master]||0)+1);document.getElementById('totalCount').textContent=articlesData.length;sidebarArea.innerHTML='<div class="master-card"><div style="font-weight:700;margin-bottom:8px;">分類</div>'+['全部',...allMasters].map(m=>{const cnt=m==='全部'?articlesData.length:(counts[m]||0);const active=selectedMaster===m?'style="background:#2d4a3e;color:#fff;"':'';return '<div '+active+' onclick="selectMaster(\''+m.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;"><span>'+escapeHtml(m)+'</span><span style="font-size:.7rem;background:#e7e3dc;padding:1px 6px;border-radius:4px;">'+cnt+'</span></div>';}).join('')+'</div>';}
+function renderSidebar(){
+  const counts={};
+  articlesData.forEach(a=>counts[a.master]=(counts[a.master]||0)+1);
+  document.getElementById('totalCount').textContent=articlesData.length;
+  const all=['全部',...allMasters];
+  sidebarArea.innerHTML='<div class="master-card">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">'
+    +'<div style="font-weight:800;font-size:14px;letter-spacing:.5px;display:flex;align-items:center;gap:6px;">📚 分類</div>'
+    +'<div style="font-size:11px;color:#8a8075;background:#fcfbf9;border:1px solid #f0ece5;padding:2px 8px;border-radius:999px;">'+articlesData.length+' 篇</div>'
+    +'</div>'
+    +'<div style="display:flex;flex-direction:column;gap:2px;">'
+    +all.map(m=>{
+      const cnt=m==='全部'?articlesData.length:(counts[m]||0);
+      const active=selectedMaster===m?'active':'';
+      return '<div class="master-item '+active+'" onclick="selectMaster(''+m.replace(/'/g,"\'")+'')">'
+        +'<span style="display:flex;align-items:center;gap:6px;flex:1;min-width:0;"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+escapeHtml(m)+'</span></span>'
+        +'<span class="count-badge">'+cnt+'</span>'
+        +'</div>';
+    }).join('')
+    +'</div></div>';
+}
 function renderList(shouldScroll){const q=currentQuery.toLowerCase().trim();let filtered=articlesData.filter(a=>{const matchMaster=selectedMaster==='全部'||a.master===selectedMaster;const matchQuery=!q||a.title.toLowerCase().includes(q)||a.master.toLowerCase().includes(q)||a.content.toLowerCase().includes(q)||(a.tags&&a.tags.some(t=>t.toLowerCase().includes(q)));return matchMaster&&matchQuery;});if(filtered.length===0){listArea.innerHTML='<div style="text-align:center;padding:30px;color:#8a8075;">找不到</div>';return;}const groups={};filtered.forEach(a=>{if(!groups[a.master]) groups[a.master]=[];groups[a.master].push(a);});let html="";Object.entries(groups).forEach(([master,articles])=>{html+='<div class="master-card"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><strong>\uD83D\uDC64 '+highlight(master,currentQuery)+'</strong><span>'+articles.length+' 篇</span></div><div>'+articles.map(a=>{const snippet=getSmartSnippet(a.content,currentQuery);return '<div class="article-item" onclick="showDetail(event,\''+a.id+'\')"><div style="font-weight:600;">'+highlight(a.title,currentQuery)+'</div><div style="font-size:.8rem;color:#8a8075;">'+highlight(snippet,currentQuery)+'</div><div>'+(a.tags||[]).map(t=>'<button class="tag-btn" onclick="handleTagClick(event,\''+t.replace(/'/g,"\\'")+'\')"> #'+escapeHtml(t)+'</button>').join('')+'</div></div>';}).join('')+'</div></div>';});listArea.innerHTML=html;detailArea.style.display='none';listArea.style.display='block';if(shouldScroll) window.scrollTo({top:0,behavior:'smooth'});}
 function showDetail(e,id){if(e) e.stopPropagation();const article=articlesData.find(a=>String(a.id)===String(id));if(!article) return;listArea.style.display='none';detailArea.style.display='block';const tags=Array.isArray(article.tags)?article.tags:[];const images=Array.isArray(article.images)?article.images:[];let ytHTML="";const ytId=getYoutubeId(article.youtube);if(ytId) ytHTML='<div class="yt-card"><div class="yt-container"><iframe src="https://www.youtube.com/embed/'+ytId+'" allowfullscreen></iframe></div></div>';let imgHTML="";if(images.length>0) imgHTML='<div class="image-gallery">'+images.map(img=>'<img src="'+img+'" onclick="openImgModal(\''+img.replace(/'/g,"\\'")+'\')">').join('')+'</div>';detailArea.innerHTML='<button onclick="renderList(true)" style="margin-bottom:12px;">← 返回</button><div style="font-size:.8rem;color:#2d4a3e;">\uD83D\uDC64 '+escapeHtml(article.master)+'</div><h2 class="detail-title">'+escapeHtml(article.title)+'</h2><div>'+tags.map(t=>'<button class="tag-btn" onclick="handleTagClick(event,\''+t.replace(/'/g,"\\'")+'\')"> #'+escapeHtml(t)+'</button>').join('')+'</div>'+ytHTML+imgHTML+'<div class="detail-content">'+linkify(article.content)+'</div>';window.scrollTo({top:0,behavior:'smooth'});history.pushState(null,null,'?id='+id);}
 function openImgModal(src){document.getElementById('modalImg').src=src;document.getElementById('imgModal').style.display='flex';}
