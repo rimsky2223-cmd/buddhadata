@@ -78,8 +78,10 @@
   </div>
   <div id="imgModal" class="img-modal" onclick="this.style.display='none'"><img id="modalImg" src=""></div>
   <script>
-    const articlesData = [];
-    const mastersList = ['經典', '聖嚴法師', '淨界法師', '宣化上人', '印光大師', '其他'];
+    // 這裡放入你本機所有的文章資料
+    const articlesData = JSON.parse(localStorage.getItem('dharma_articles') || '[]');
+    const mastersList = JSON.parse(localStorage.getItem('dharma_masters') || '["經典", "聖嚴法師", "淨界法師", "宣化上人", "印光大師", "其他"]');
+
     let currentQuery = ""; let selectedMaster = "全部";
     const searchInput = document.getElementById("searchInput");
     const clearBtn = document.getElementById("clearBtn");
